@@ -52,7 +52,6 @@ const IndexPage = () => {
               ...rateInformation.competitors,
               Us: rateInformation.price,
             },
-          tax: rateInformation && rateInformation.taxes_and_fees,
           breakdown:
             (price || taxes_and_fees) &&
             createPriceBreakdown(price, taxes_and_fees),
@@ -112,7 +111,7 @@ const IndexPage = () => {
                     const savingsPercentage = calculateSavings(
                       datum.price,
                       entry[1]
-                    ).toFixed(2)
+                    )
                     return savingsPercentage > 0
                       ? `Save ${savingsPercentage}%`
                       : ""
