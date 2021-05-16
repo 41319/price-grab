@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Badge List renders correctly 1`] = `
+<div
+  className="StyledBox-sc-13pk1d4-0 kUTqHn"
+/>
+`;
