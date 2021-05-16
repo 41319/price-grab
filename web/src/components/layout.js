@@ -16,6 +16,7 @@ import CurrencyContext from "../context/currencies"
 
 const Layout = ({ children }) => {
   const currency = React.useContext(CurrencyContext)
+
   const data = useStaticQuery(graphql`
     query SiteTitleQuery {
       site {
