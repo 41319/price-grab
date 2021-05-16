@@ -8,7 +8,7 @@ const Rating = ({ rate, stars }) => {
   return (
     <Box direction="row">
       {[...Array(stars).keys()].map(e => (
-        <Star color="#FFC95E" />
+        <Star key={e} color="#FFC95E" />
       ))}
       {rate}
     </Box>
