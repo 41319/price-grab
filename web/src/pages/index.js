@@ -10,10 +10,7 @@ import Rating from "../components/Rating"
 import ReactHtmlParser from "react-html-parser"
 import { calculateSavings } from '../helpers/number'
 import BadgeList from '../components/BadgeList'
-
-const PRICE_ENDPOINT =
-  "http://5df9cc6ce9f79e0014b6b3dc.mockapi.io/hotels/tokyo/1/"
-
+import { getHotels } from '../service/hotels'
 
 const createPriceBreakdown = (totalprice, miscFeesObject = {}) => {
   const roomFee = Object.values(miscFeesObject).reduce((acc, next) => {
@@ -31,13 +28,9 @@ const IndexPage = () => {
 
   useEffect(async () => {
     if (_currencyContext.selectedCurrency) {
-      const hotels = await fetch(
-        "https://5df9cc6ce9f79e0014b6b3dc.mockapi.io/hotels/tokyo"
-      ).then(d => d.json())
+      const hotels = await getHotels('tokyo/1')
 
-      const priceInfo = await fetch(
-        `${PRICE_ENDPOINT}${_currencyContext.selectedCurrency}`
-      ).then(d => d.json())
+      const priceInfo = await getHotels(`tokyo/1/${_currencyContext.selectedCurrency}`)
 
       const _datasource = hotels.map((hotel, index) => {
         const rateInformation = priceInfo.find(e => e.id === hotel.id)
@@ -52,6 +45,7 @@ const IndexPage = () => {
               ...rateInformation.competitors,
               Us: rateInformation.price,
             },
+          hasTax: !!taxes_and_fees,
           breakdown:
             (price || taxes_and_fees) &&
             createPriceBreakdown(price, taxes_and_fees),
@@ -95,7 +89,7 @@ const IndexPage = () => {
                 }
               >
                 <Button
-                  label={`Book for ${_currencyContext.selectedCurrency}${datum.price}`}
+                  label={`Book for ${_currencyContext.selectedCurrency}${datum.price}${datum.hasTax ? '**' : ''}`}
                   primary
                   size="large"
                 />
