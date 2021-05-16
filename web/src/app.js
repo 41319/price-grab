@@ -5,42 +5,39 @@
  * See: https://www.gatsbyjs.com/docs/use-static-query/
  */
 
- import React, { useState } from "react"
- import PropTypes from "prop-types"
- import CurrencyContext from './context/currencies'
- 
- const Layout = ({ children }) => {
-   const [_currencyContext, setCurrencyContext] = useState({
-       selectedCurrency: 'USD',
-       availableCurrencies: [
-         'USD',
-         'SGD',
-         'CNY',
-         'KRW'
-       ],
-       setCurrency: () => {
-           alert('13')
-       }
-   });
- 
-   return (
-     <>
-       <CurrencyContext.Provider value={{ 
-           ..._currencyContext,
-           setCurrency: (currency) => setCurrencyContext({
-                ..._currencyContext,
-                selectedCurrency: currency
-           })
-        }}>
-       { children }
-       </CurrencyContext.Provider>
-     </>
-   )
- }
- 
- Layout.propTypes = {
-   children: PropTypes.node.isRequired,
- }
- 
- export default Layout
- 
+import React, { useState } from "react"
+import PropTypes from "prop-types"
+import CurrencyContext from "./context/currencies"
+
+const Layout = ({ children }) => {
+  const [_currencyContext, setCurrencyContext] = useState({
+    selectedCurrency: "USD",
+    availableCurrencies: ["USD", "SGD", "CNY", "KRW"],
+    setCurrency: () => {
+      alert("13")
+    },
+  })
+
+  return (
+    <>
+      <CurrencyContext.Provider
+        value={{
+          ..._currencyContext,
+          setCurrency: currency =>
+            setCurrencyContext({
+              ..._currencyContext,
+              selectedCurrency: currency,
+            }),
+        }}
+      >
+        {children}
+      </CurrencyContext.Provider>
+    </>
+  )
+}
+
+Layout.propTypes = {
+  children: PropTypes.node.isRequired,
+}
+
+export default Layout

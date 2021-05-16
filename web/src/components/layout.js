@@ -11,8 +11,8 @@ import { useStaticQuery, graphql } from "gatsby"
 
 import Header from "./header"
 import "./layout.css"
-import { Menu, Box, TextInput } from 'grommet'
-import CurrencyContext from '../context/currencies'
+import { Menu, Box, TextInput } from "grommet"
+import CurrencyContext from "../context/currencies"
 
 const Layout = ({ children }) => {
   const currency = React.useContext(CurrencyContext)
@@ -28,7 +28,6 @@ const Layout = ({ children }) => {
 
   return (
     <>
-
       <Header siteTitle={data.site.siteMetadata?.title || `Title`} />
       <div
         style={{
@@ -36,17 +35,22 @@ const Layout = ({ children }) => {
           maxWidth: 960,
           padding: `0 1.0875rem 1.45rem`,
         }}
-      >        <Box direction="row">
-      <Menu
-          
-          justifyContent="end"
-          label={currency.selectedCurrency}
-          items={currency.availableCurrencies ? currency.availableCurrencies.map(c => ({
-            label: c,
-            onClick: () => currency.setCurrency(c)
-          })): []}
-        />
-      </Box>
+      >
+        {" "}
+        <Box direction="row">
+          <Menu
+            justifyContent="end"
+            label={currency.selectedCurrency}
+            items={
+              currency.availableCurrencies
+                ? currency.availableCurrencies.map(c => ({
+                    label: c,
+                    onClick: () => currency.setCurrency(c),
+                  }))
+                : []
+            }
+          />
+        </Box>
         <main>{children}</main>
         <footer
           style={{
