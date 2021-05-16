@@ -8,11 +8,10 @@ import CurrencyContext from "../context/currencies"
 import { List, Box, Image } from "grommet"
 import Rating from "../components/Rating"
 import ReactHtmlParser from "react-html-parser"
-
+import { calculateSavings } from '../helpers/number'
 const PRICE_ENDPOINT =
   "http://5df9cc6ce9f79e0014b6b3dc.mockapi.io/hotels/tokyo/1/"
-const calculateSavings = (price, comparePrice) =>
-  ((comparePrice - price) / price) * 100
+
 
 const BadgeList = ({
   data,
