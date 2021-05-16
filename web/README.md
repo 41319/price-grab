@@ -1,3 +1,3 @@
-cd web
-yarn install
-yarn start
+### cd web
+### yarn install
+### yarn start
