@@ -10,11 +10,11 @@ import Rating from '../components/Rating'
 import ReactHtmlParser from 'react-html-parser'; 
 
 const PRICE_ENDPOINT = 'http://5df9cc6ce9f79e0014b6b3dc.mockapi.io/hotels/tokyo/1/'
+const calculateSavings = (price, comparePrice) => (comparePrice - price) / price * 100
 
-const CompetitorList = ({ data, originPrice, pricePrefix }) => {
+const BadgeList = ({ data, originPrice, pricePrefix, priceSuffix, afterBadgeRender }) => {
   const sortable = Object.entries(data).sort(([,a],[,b]) => a-b)
   const highestPrice = sortable[sortable.length - 1]
-  const calculateSavings = (price, comparePrice) => comparePrice - price / price * 100
   const colors = ['accent-1', 'accent-2', 'accent-3', 'neutral-1', 'neutral-2', 'neutral-3']
   const colorSet = sortable.length / colors.length > 1 ? sortable.length / colors.length : 1
   const colorsMap = [...Array(colorSet).keys()].reduce((acc, next) => {
@@ -23,20 +23,30 @@ const CompetitorList = ({ data, originPrice, pricePrefix }) => {
   return <Box gap="small">
       {
       sortable && sortable.map((entry, i) => {
-        const savingsPercentage = calculateSavings(originPrice,entry[1]);
 
     return <Box direction="row" >
               <Box>
               <Button color={colorsMap[i]} primary label={`${entry[0]} ${pricePrefix}${entry[1]}`} />
               {
-                savingsPercentage > 0 ? `Save ${savingsPercentage}%` : ''
+                afterBadgeRender && afterBadgeRender(entry)
               }
+
               </Box>
               
               
            </Box>
       
   })}</Box>
+}
+
+const createPriceBreakdown = (totalprice, miscFeesObject = {}) => {
+  const roomFee = Object.values(miscFeesObject).reduce((acc, next) => {
+    return acc - next
+  }, totalprice)
+  return {
+    ...miscFeesObject,
+    roomFee: roomFee,
+  }
 }
 
 
@@ -55,15 +65,16 @@ const IndexPage = () => {
 
       const _datasource = hotels.map((hotel, index) => {
         const rateInformation = priceInfo.find(e => e.id === hotel.id);
-        const price = rateInformation ? rateInformation.price : -1
+        const { taxes_and_fees, price } = rateInformation || {};
         const order = rateInformation ? order : hotels.length + 1;
-
         return ({
           ...hotel,
-          price: rateInformation && rateInformation.taxes_and_fees ? price :price,
+          price: price || -1,
           order,
           competitors: rateInformation && rateInformation.competitors && { ...rateInformation.competitors, Us: rateInformation.price  },
-          tax: rateInformation && rateInformation.taxes_and_fees
+          tax: rateInformation && rateInformation.taxes_and_fees,
+          breakdown: (price || taxes_and_fees) && createPriceBreakdown(price, taxes_and_fees),
+
         })
       })
       
@@ -103,11 +114,13 @@ const IndexPage = () => {
           { ReactHtmlParser (datum.description) } 
           <Box direction="row" justify="end">
             </Box>
-          <Tip plain content={<Box margin="xsmall" pad="small" background="accent-4">{
-            <CompetitorList data={{
-              ...datum.tax,
-              room: datum.price,
-            }} pricePrefix={_currencyContext.selectedCurrency} />
+          <Tip plain content={<Box margin="xsmall" pad="small" background="accent-4">
+
+            
+            {
+         
+            
+         datum.breakdown && <BadgeList data={datum.breakdown} pricePrefix={_currencyContext.selectedCurrency} />
           }</Box>}>
             <Button label={ `Book for ${_currencyContext.selectedCurrency}${datum.price}` } primary size="large"/>
           </Tip>
@@ -116,10 +129,14 @@ const IndexPage = () => {
           {
             datum.competitors &&           <Box>
 
-            <CompetitorList 
+            <BadgeList 
               data={datum.competitors} 
-              originPrice={datum.price} 
+
               pricePrefix={_currencyContext.selectedCurrency}
+              afterBadgeRender={(entry) => {
+                const savingsPercentage = calculateSavings(datum.price, entry[1]).toFixed(2);
+                return savingsPercentage > 0 ? `Save ${savingsPercentage}%` : ''
+              }}
             />
 
             </Box>
