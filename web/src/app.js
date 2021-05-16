@@ -12,6 +12,12 @@
  const Layout = ({ children }) => {
    const [_currencyContext, setCurrencyContext] = useState({
        selectedCurrency: 'USD',
+       availableCurrencies: [
+         'USD',
+         'SGD',
+         'CNY',
+         'KRW'
+       ],
        setCurrency: () => {
            alert('13')
        }
@@ -22,6 +28,7 @@
        <CurrencyContext.Provider value={{ 
            ..._currencyContext,
            setCurrency: (currency) => setCurrencyContext({
+                ..._currencyContext,
                 selectedCurrency: currency
            })
         }}>

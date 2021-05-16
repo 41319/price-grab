@@ -2,6 +2,7 @@ import * as React from "react"
 import PropTypes from "prop-types"
 import { Link } from "gatsby"
 
+
 const Header = ({ siteTitle }) => (
   <header
     style={{
@@ -9,6 +10,7 @@ const Header = ({ siteTitle }) => (
       marginBottom: `1.45rem`,
     }}
   >
+
     <div
       style={{
         margin: `0 auto`,
